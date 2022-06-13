@@ -1,0 +1,6 @@
+shabu.sqlite
+.direnv/
+*.swp
+__pycache__/
+*.egg-info/
+shas.env*

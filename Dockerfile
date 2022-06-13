@@ -1,2 +1,2 @@
 # demo dockerfile for build
-FROM scratch
+FROM busybox
