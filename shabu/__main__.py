@@ -97,6 +97,8 @@ def main():
         logger.debug('[%s] rowid %d', name, rowid)
         if args.push:
             tag = build.push(name, conf, db, args, rowid)
+            _, version = tag.split(':')
             envfile[f'{name}_tag'] = tag
+            envfile[f'{name}_version'] = version
     envfile.write(args.dotenv)
     logger.debug('wrote dotenv')
