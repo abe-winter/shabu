@@ -3,4 +3,4 @@ shabu.sqlite
 *.swp
 __pycache__/
 *.egg-info/
-shas.env*
+tags.env*

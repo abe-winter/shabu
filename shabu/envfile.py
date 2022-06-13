@@ -29,8 +29,12 @@ class Envfile(list):
             return super().__setitem__(key, val)
         elif not isinstance(key, str):
             raise TypeError('expected str or int index', type(key))
-        index = self.lookup()[key]
-        self[index] = f'{key}={val}'
+        index = self.lookup().get(key)
+        row = f'{key}={val}'
+        if index is None:
+            self.append(row)
+        else:
+            self[index] = row
 
     def write(self, path: str, backup: bool = True):
         "write to path, optionally copy existing to backup"
