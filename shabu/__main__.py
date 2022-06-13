@@ -77,9 +77,15 @@ def main():
     p.add_argument('--only', help="only build one named build") # todo: nargs=*
     p.add_argument('-p', '--push', help="push as well as build", action='store_true')
     p.add_argument('-q', '--quiet', help="capture docker shell output", action='store_true')
+    p.add_argument('--last', help="don't build, use most recent build for push", action='store_true')
     args = p.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.level.upper()))
+
+    if args.only:
+        raise NotImplementedError('--only not supported yet')
+    if args.last:
+        raise NotImplementedError('--last not supported yet')
 
     db = shadb.migrate_db(args)
     conf = Conf.parse(args)
