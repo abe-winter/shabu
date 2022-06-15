@@ -19,4 +19,4 @@ jobs:
       - name: Install dependencies
         run: pip install .[test]
       - name: Lint
-        run: pylint -E pil_layout
+        run: pylint -E shabu
