@@ -82,8 +82,6 @@ def main():
 
     logging.basicConfig(level=getattr(logging, args.level.upper()))
 
-    if args.only:
-        raise NotImplementedError('--only not supported yet')
     if args.last:
         raise NotImplementedError('--last not supported yet')
 
@@ -93,6 +91,9 @@ def main():
     envfile = Envfile.parse(args.dotenv)
     logger.debug('existing env %s', envfile.lookup())
     for name, build in conf.builds.items():
+        if args.only and name != args.only:
+            logger.debug('[%s] skipping because only=%s', name, args.only)
+            continue
         rowid = build.build(name, conf, db, args)
         logger.debug('[%s] rowid %d', name, rowid)
         if args.push:

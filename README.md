@@ -12,7 +12,7 @@ Versions are stored locally for now so you can't easily share this with a team.
 
 ```
 # install
-pip install https://github.com/abe-winter/shabu.git
+pip install git+https://github.com/abe-winter/shabu.git
 
 # create a config file
 # look at shabu.json in this repo
@@ -26,3 +26,7 @@ shabu
 # build with push
 shabu -p
 ```
+
+## similar tools to investigate
+
+- bazel's [docker rules](https://github.com/bazelbuild/rules_docker)
