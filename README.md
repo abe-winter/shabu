@@ -30,3 +30,8 @@ shabu -p
 ## similar tools to investigate
 
 - bazel's [docker rules](https://github.com/bazelbuild/rules_docker)
+- skaffold
+
+## todo
+
+- [ ] try https://github.com/mtkennerly/dunamai version strings or https://pypi.org/project/incremental

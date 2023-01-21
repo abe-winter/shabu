@@ -5,6 +5,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+# todo: 'default now' doesn't do the right thing here or in 'create table migrations' below
 MIGRATIONS = [
     (1, 'initial', ['create table if not exists builds (id integer primary key autoincrement, name text, full_sha text, short_sha text, dirty bool, build_count integer default 0, pushed bool default 0, created text default now)']),
 ]

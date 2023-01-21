@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse, json, logging, subprocess
 from datetime import datetime
 from typing import Optional, Dict
@@ -6,6 +7,7 @@ from .envfile import Envfile
 from . import gitapi, shadb
 
 logger = logging.getLogger(__name__)
+__version__ = '0.0.2'
 
 @dataclass
 class BuildConf:
@@ -15,12 +17,16 @@ class BuildConf:
     # todo: build args
     # todo: optional 'latest' ('always', 'clean', 'no')
 
-    def tag(self, name, outer, row) -> str:
-        "format a tag from a shadb row and other context"
+    def tag_version(self, row) -> str:
+        "format just the tag part of the full image"
         suffix = f'.b{row["build_count"]}' if row and row['dirty'] else ''
+        return f"{row['short_sha']}{suffix}"
+
+    def tag(self, name, outer, row) -> str:
+        "format an image:tag from a shadb row and other context"
         registry = self.registry or outer.registry
         base_tag = '/'.join(filter(None, (registry, name)))
-        return f"{base_tag}:{row['short_sha']}{suffix}"
+        return f"{base_tag}:{self.tag_version(row)}"
 
     def build(self, name, outer, db, args) -> int:
         "compute tag + run docker build, write to shadb. returns shadb rowid (to use for push)"
@@ -31,9 +37,11 @@ class BuildConf:
         rowid = shadb.writebuild(db, name, sha, sha[:outer.short], not clean, build_num)
         row = shadb.get(db, rowid)
         tag = self.tag(name, outer, row)
+        tag_version = self.tag_version(row)
         logger.debug('[%s] tag is %s', name, tag)
         # todo: find docs for last arg being workdir
-        subprocess.run(f"docker build -f {self.workdir}/{self.dockerfile} -t {tag} {self.workdir}", shell=True, capture_output=args.quiet) \
+        # todo: think about workdir and dockerfile. easy for a user to get confused and think dockerfile is relative to cwd
+        subprocess.run(f"docker build --build-arg DOCKER_TAG={tag_version} -f {self.workdir}/{self.dockerfile} -t {tag} {self.workdir}", shell=True, capture_output=args.quiet) \
             .check_returncode()
         db.commit()
         return rowid
@@ -78,6 +86,7 @@ def main():
     p.add_argument('-p', '--push', help="push as well as build", action='store_true')
     p.add_argument('-q', '--quiet', help="capture docker shell output", action='store_true')
     p.add_argument('--last', help="don't build, use most recent build for push", action='store_true')
+    p.add_argument('--version', action='version', version=__version__)
     args = p.parse_args()
 
     logging.basicConfig(level=getattr(logging, args.level.upper()))

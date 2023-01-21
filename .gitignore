@@ -4,3 +4,4 @@ shabu.sqlite
 __pycache__/
 *.egg-info/
 tags.env*
+build/
